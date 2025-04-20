@@ -1,14 +1,14 @@
-import { FC } from "react";
-import scss from "./Store.module.scss";
+import { configureStore } from "@reduxjs/toolkit";
+import data from "./slices/Slice";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
-const Store: FC = () => {
-  return (
-    <section className={scss.Store}>
-      <div className="container">
-        <div className={scss.content}>Store</div>
-      </div>
-    </section>
-  );
-};
-
-export default Store;
+export const store = configureStore({
+  reducer: {
+    data: data,
+  },
+});
+export default store;
+export const useAppSelector: TypedUseSelectorHook<
+  ReturnType<typeof store.getState>
+> = useSelector;
+export const useAppDispatch: () => typeof store.dispatch = useDispatch;

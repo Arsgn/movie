@@ -1,4 +1,5 @@
 import Admin from "../components/page/Admin";
+import DetailsPage from "../components/page/details/Details";
 import Home from "../components/page/Home";
 import Product from "../components/page/Product";
 
@@ -17,5 +18,9 @@ export const links = [
     link: "/admin",
     title: "admin",
     el: <Admin />,
+  },
+  {
+    link: "/details/:type/:id",
+    el: <DetailsPage />,
   },
 ];
