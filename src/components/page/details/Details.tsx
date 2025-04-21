@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import scss from "./Details.module.scss";
@@ -6,7 +6,7 @@ import scss from "./Details.module.scss";
 interface IMovieDetails {
   id: number;
   title: string;
-  name?: string; // для TV-шоу
+  name?: string;
   overview: string;
   poster_path: string;
   release_date?: string;
@@ -30,7 +30,7 @@ const DetailsPage = () => {
         );
         setMovie(data);
       } catch (error) {
-        console.error("Ошибка при загрузке данных:", error);
+        console.error("Ошибка при загрузке фильма:", error);
       }
     };
 
@@ -69,7 +69,8 @@ const DetailsPage = () => {
             <p>
               <strong>Описание:</strong> {movie.overview}
             </p>
-            <button onClick={() => navigate("/product")}>back</button>
+
+            <button onClick={() => navigate("/product")}>Назад</button>
           </div>
         </div>
       </div>
