@@ -29,6 +29,7 @@ const Product: FC = () => {
       `https://api.themoviedb.org/3/${change}/popular?api_key=${api}&language=en-US&page=${pageNum}`
     );
     setMovie(data.results);
+    setFiltered(data.results);
   };
 
   useEffect(() => {
