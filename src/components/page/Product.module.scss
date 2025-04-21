@@ -1,0 +1,84 @@
+.HomePage {
+  background-color: #fff;
+  padding: 40px 20px;
+  min-height: 100vh;
+
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    .search {
+      padding: 10px 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      max-width: 400px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .scrollRow {
+      display: flex;
+      overflow-x: auto;
+      gap: 16px;
+      padding-bottom: 10px;
+
+      &::-webkit-scrollbar {
+        height: 8px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 10px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+    }
+
+    .box {
+      flex: 0 0 auto;
+      width: 160px;
+      background: #f2f2f2;
+      border-radius: 12px;
+      overflow: hidden;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: translateY(-4px);
+      }
+
+      img {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+        display: block;
+      }
+
+      h4 {
+        font-size: 14px;
+        margin: 8px 0;
+        padding: 0 6px;
+        color: #333;
+      }
+    }
+  }
+}
+
+.bot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
