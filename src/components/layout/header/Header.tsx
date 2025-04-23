@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import scss from "./Header.module.scss";
 import { IoLogoAngular } from "react-icons/io";
+import { Link, useNavigate } from "react-router-dom";
+import { links } from "../../../constants/Links";
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,10 +21,11 @@ export default function Header() {
     <header id="header" className={scrolled ? scss.scrolled : ""}>
       <div className={scss.container}>
         <div className={scss.header_content}>
-          <a href="/" className={scss.logo}>
+          <a href="/product" className={scss.logo}>
             <div className={scss.logo_icon}>
               <div className={scss.logo_glow}></div>
-              <IoLogoAngular />
+
+              <IoLogoAngular onClick={() => navigate("/product")} />
             </div>
             <span className={scss.logo_text}>
               <span className={scss.logo_text_movie}>Alpha</span>
@@ -34,6 +38,9 @@ export default function Header() {
             <a href="/movies" className={scss.nav_link}>
               Movies<span className={scss.nav_link_underline}></span>
             </a>
+            {links.map((item, index) => (
+              <Link key={index} className={scss.link} to={item.link}></Link>
+            ))}
             <div className={scss.dropdown}>
               <button className={scss.dropdown_button}>
                 Genres

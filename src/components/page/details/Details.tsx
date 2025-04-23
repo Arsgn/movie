@@ -12,6 +12,7 @@ interface IMovieDetails {
   release_date?: string;
   first_air_date?: string;
   vote_average: number;
+  backdrop_path: string;
 }
 
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
@@ -48,13 +49,20 @@ const DetailsPage = () => {
   }
 
   return (
-    <div className={scss.DetailsPage}>
+    <div
+      style={{
+        background: `url(${IMAGE_BASE_URL}${movie.backdrop_path}) no-repeat center`,
+        backgroundSize: "cover",
+      }}
+      className={scss.DetailsPage}
+    >
+      <div className={scss.bg}></div>
       <div className="container">
         <div className={scss.content}>
           <div className={scss.imageWrapper}>
             <img
               src={`${IMAGE_BASE_URL}${movie.poster_path}`}
-              alt={movie.title}
+              alt={movie.title || movie.name}
             />
           </div>
           <div className={scss.info}>
@@ -69,7 +77,6 @@ const DetailsPage = () => {
             <p>
               <strong>Описание:</strong> {movie.overview}
             </p>
-
             <button onClick={() => navigate("/product")}>Назад</button>
           </div>
         </div>

@@ -10,6 +10,7 @@ interface IMovie {
   original_title: string;
   poster_path: string;
   name: string;
+  backdrop_path: string;
 }
 
 const api = "45d1d56fc54beedb6c0207f9ac6cab7c";
@@ -20,7 +21,7 @@ const Product: FC = () => {
   const [filtered, setFiltered] = useState<IMovie[]>([]);
   const [change, setChange] = useState<"movie" | "tv">("movie");
   const [count, setCount] = useState(0);
-  const [countEnd, setCountEnd] = useState(10);
+  const [countEnd, setCountEnd] = useState(12);
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
 
@@ -33,28 +34,30 @@ const Product: FC = () => {
   };
 
   useEffect(() => {
-    fetchData(page);
-  }, [page, change, Link]);
+    if (!query) {
+      fetchData(page);
+    }
+  }, [page, change]);
 
   const handleNext = () => {
     if (countEnd >= filtered.length) {
       setPage((prev) => prev + 1);
       setCount(0);
-      setCountEnd(10);
+      setCountEnd(12);
     } else {
-      setCount((prev) => prev + 10);
-      setCountEnd((prev) => prev + 10);
+      setCount((prev) => prev + 8);
+      setCountEnd((prev) => prev + 12);
     }
   };
 
   const handleBack = () => {
     if (count === 0 && page > 1) {
       setPage((prev) => prev - 1);
-      setCount(10);
+      setCount(8);
       setCountEnd(20);
     } else if (count > 0) {
-      setCount((prev) => prev - 10);
-      setCountEnd((prev) => prev - 10);
+      setCount((prev) => prev - 8);
+      setCountEnd((prev) => prev - 8);
     }
   };
 
@@ -62,8 +65,31 @@ const Product: FC = () => {
     setChange(val as "movie" | "tv");
     setPage(1);
     setCount(0);
-    setCountEnd(10);
+    setCountEnd(12);
+    setQuery(""); // сбрасываем поиск при переключении
   };
+
+  const handleSearch = (val: string) => {
+    setQuery(val);
+  };
+
+  const filterData = async () => {
+    if (!query.trim()) return;
+
+    try {
+      const { data } = await axios.get(
+        `https://api.themoviedb.org/3/search/${change}?api_key=${api}&query=${query}`
+      );
+      setMovie(data.results);
+      setFiltered(data.results);
+      setCount(0);
+      setCountEnd(12);
+    } catch (error) {
+      console.error("Ошибка при поиске:", error);
+    }
+  };
+
+  console.log(filtered);
 
   return (
     <div>
@@ -71,11 +97,16 @@ const Product: FC = () => {
         <div className="container">
           <div className={scss.content}>
             <div className={scss.bot}>
-              <input
-                type="text"
-                placeholder="Search..."
-                className={scss.search}
-              />
+              <div className={scss.top}>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  onChange={(e) => handleSearch(e.target.value)}
+                  className={scss.search}
+                />
+                <button onClick={filterData}>Search</button>
+              </div>
+
               <SwitchExs
                 first="movie"
                 second="tv"
@@ -96,6 +127,7 @@ const Product: FC = () => {
                 </div>
               ))}
             </div>
+
             <div className={scss.buttons}>
               <button onClick={handleBack} disabled={page === 1 && count === 0}>
                 back
