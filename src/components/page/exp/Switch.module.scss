@@ -1,0 +1,45 @@
+.switch {
+  position: relative;
+  display: flex;
+  width: 220px;
+  background: #1c1c1c;
+  border: 1px solid #bd4901;
+  border-radius: 40px;
+  overflow: hidden;
+  cursor: pointer;
+  font-weight: bold;
+  user-select: none;
+}
+
+.option {
+  flex: 1;
+  text-align: center;
+  padding: 9px 0;
+  z-index: 1;
+  color: #fff;
+  transition: color 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.activeOption {
+  color: #ffffff;
+}
+
+.slider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background-color: #a93e00;
+  border-radius: 18px;
+  transition: left 0.3s ease;
+  z-index: 0;
+  -webkit-border-radius: 18px;
+  -moz-border-radius: 18px;
+  -ms-border-radius: 18px;
+  -o-border-radius: 18px;
+}
