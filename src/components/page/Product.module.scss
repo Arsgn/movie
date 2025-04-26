@@ -116,31 +116,36 @@
     gap: 20px;
     margin-top: 20px;
 
-    button {
-      background: linear-gradient(135deg, #ff7b00, #ff5722);
-      color: white;
-      border: none;
-      padding: 12px 30px;
-      border-radius: 30px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      box-shadow: 0 4px 15px rgba(255, 123, 0, 0.3);
-
-      &:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(255, 123, 0, 0.5);
-        background: linear-gradient(135deg, #ff8c00, #ff6e40);
-      }
-
-      &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        background: #777;
-      }
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background: #777;
     }
   }
+}
+button {
+  background: linear-gradient(135deg, #ff7b00, #ff5722);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(255, 123, 0, 0.3);
+  margin-left: 10px;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 123, 0, 0.5);
+    background: linear-gradient(135deg, #ff8c00, #ff6e40);
+  }
+}
+
+h3 {
+  font-size: 25px;
+  cursor: pointer;
 }

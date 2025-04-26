@@ -24,11 +24,14 @@ const Product: FC = () => {
   const [countEnd, setCountEnd] = useState(12);
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
+  const [isTopRated, setIsTopRated] = useState(false);
 
   const fetchData = async (pageNum: number) => {
-    const { data } = await axios.get(
-      `https://api.themoviedb.org/3/${change}/popular?api_key=${api}&language=en-US&page=${pageNum}`
-    );
+    const endpoint = isTopRated
+      ? `https://api.themoviedb.org/3/${change}/top_rated?api_key=${api}&language=en-US&page=${pageNum}`
+      : `https://api.themoviedb.org/3/${change}/popular?api_key=${api}&language=en-US&page=${pageNum}`;
+
+    const { data } = await axios.get(endpoint);
     setMovie(data.results);
     setFiltered(data.results);
   };
@@ -37,7 +40,7 @@ const Product: FC = () => {
     if (!query) {
       fetchData(page);
     }
-  }, [page, change]);
+  }, [page, change, isTopRated]);
 
   const handleNext = () => {
     if (countEnd >= filtered.length) {
@@ -66,7 +69,7 @@ const Product: FC = () => {
     setPage(1);
     setCount(0);
     setCountEnd(12);
-    setQuery(""); // сбрасываем поиск при переключении
+    setQuery("");
   };
 
   const handleSearch = (val: string) => {
@@ -89,6 +92,14 @@ const Product: FC = () => {
     }
   };
 
+  const handleTopRatedClick = () => {
+    setIsTopRated((prev) => !prev);
+    setPage(1);
+    setCount(0);
+    setCountEnd(12);
+    setQuery("");
+  };
+
   console.log(filtered);
 
   return (
@@ -105,6 +116,9 @@ const Product: FC = () => {
                   className={scss.search}
                 />
                 <button onClick={filterData}>Search</button>
+                <button onClick={handleTopRatedClick}>
+                  {isTopRated ? "Show Popular" : "Show Top Rated"}
+                </button>
               </div>
 
               <SwitchExs
