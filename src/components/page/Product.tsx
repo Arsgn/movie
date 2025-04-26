@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from "react";
 import scss from "./Product.module.scss";
 import SwitchExs from "./exp/Switch";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 interface IMovie {
   id: number;
@@ -16,6 +17,10 @@ interface IMovie {
 const api = "45d1d56fc54beedb6c0207f9ac6cab7c";
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
+interface ISearchForm {
+  search: string;
+}
+
 const Product: FC = () => {
   const [movie, setMovie] = useState<IMovie[]>([]);
   const [filtered, setFiltered] = useState<IMovie[]>([]);
@@ -25,6 +30,8 @@ const Product: FC = () => {
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
   const [isTopRated, setIsTopRated] = useState(false);
+
+  const { register, handleSubmit, reset } = useForm<ISearchForm>();
 
   const fetchData = async (pageNum: number) => {
     const endpoint = isTopRated
@@ -70,21 +77,21 @@ const Product: FC = () => {
     setCount(0);
     setCountEnd(12);
     setQuery("");
+    reset();
   };
 
-  const handleSearch = (val: string) => {
-    setQuery(val);
-  };
+  const onSubmit = async (data: ISearchForm) => {
+    const searchValue = data.search.trim();
+    if (!searchValue) return;
 
-  const filterData = async () => {
-    if (!query.trim()) return;
+    setQuery(searchValue);
 
     try {
-      const { data } = await axios.get(
-        `https://api.themoviedb.org/3/search/${change}?api_key=${api}&query=${query}`
+      const { data: response } = await axios.get(
+        `https://api.themoviedb.org/3/search/${change}?api_key=${api}&query=${searchValue}`
       );
-      setMovie(data.results);
-      setFiltered(data.results);
+      setMovie(response.results);
+      setFiltered(response.results);
       setCount(0);
       setCountEnd(12);
     } catch (error) {
@@ -98,9 +105,8 @@ const Product: FC = () => {
     setCount(0);
     setCountEnd(12);
     setQuery("");
+    reset();
   };
-
-  console.log(filtered);
 
   return (
     <div>
@@ -109,16 +115,17 @@ const Product: FC = () => {
           <div className={scss.content}>
             <div className={scss.bot}>
               <div className={scss.top}>
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  onChange={(e) => handleSearch(e.target.value)}
-                  className={scss.search}
-                />
-                <button onClick={filterData}>Search</button>
-                <button onClick={handleTopRatedClick}>
-                  {isTopRated ? "Show Popular" : "Show Top Rated"}
-                </button>
+                <form onSubmit={handleSubmit(onSubmit)} className={scss.form}>
+                  <input
+                    {...register("search")}
+                    type="text"
+                    placeholder="Search"
+                    className={scss.search}
+                  />
+                  <button onClick={handleTopRatedClick}>
+                    {isTopRated ? "Show Popular" : "Show Top Rated"}
+                  </button>
+                </form>
               </div>
 
               <SwitchExs

@@ -21,6 +21,8 @@ const API_KEY = "45d1d56fc54beedb6c0207f9ac6cab7c";
 const DetailsPage = () => {
   const { id, type } = useParams<{ id: string; type: string }>();
   const [movie, setMovie] = useState<IMovieDetails | null>(null);
+  const [trailerKey, setTrailerKey] = useState<string | null>(null);
+  const [isTrailerVisible, setIsTrailerVisible] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,6 +32,13 @@ const DetailsPage = () => {
           `https://api.themoviedb.org/3/${type}/${id}?api_key=${API_KEY}&language=en-US`
         );
         setMovie(data);
+        const videos = await axios.get(
+          ` https://api.themoviedb.org/3/${type}/${id}/videos?api_key=${API_KEY}&language=ru-RU`
+        );
+        const trailer = videos.data.results.find(
+          (video: any) => video.type === "Trailer" && video.site === "YouTube"
+        );
+        setTrailerKey(trailer ? trailer.key : null);
       } catch (error) {
         console.error("Ошибка при загрузке фильма:", error);
       }
@@ -77,7 +86,29 @@ const DetailsPage = () => {
             <p>
               <strong>Описание:</strong> {movie.overview}
             </p>
-            <button onClick={() => navigate("/product")}>Назад</button>
+            <div className={scss.btn}>
+              <button onClick={() => navigate("/product")}>Назад</button>
+              <button
+                onClick={() => setIsTrailerVisible(!isTrailerVisible)}
+                className={scss.toggleTrailerButton}
+              >
+                {isTrailerVisible ? "Скрыть" : "Трейлер"}
+              </button>
+            </div>
+
+            {isTrailerVisible && trailerKey && (
+              <div className={scss.trailerWrapper}>
+                <div className={scss.trailer}>
+                  <iframe
+                    src={`https://www.youtube.com/embed/${trailerKey}`}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
