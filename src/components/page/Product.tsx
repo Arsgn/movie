@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from "react";
 import scss from "./Product.module.scss";
 import SwitchExs from "./exp/Switch";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 interface IMovie {
   id: number;
@@ -10,51 +11,63 @@ interface IMovie {
   original_title: string;
   poster_path: string;
   name: string;
+  backdrop_path: string;
 }
 
 const api = "45d1d56fc54beedb6c0207f9ac6cab7c";
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
+
+interface ISearchForm {
+  search: string;
+}
 
 const Product: FC = () => {
   const [movie, setMovie] = useState<IMovie[]>([]);
   const [filtered, setFiltered] = useState<IMovie[]>([]);
   const [change, setChange] = useState<"movie" | "tv">("movie");
   const [count, setCount] = useState(0);
-  const [countEnd, setCountEnd] = useState(10);
+  const [countEnd, setCountEnd] = useState(12);
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
+  const [isTopRated, setIsTopRated] = useState(false);
+
+  const { register, handleSubmit, reset } = useForm<ISearchForm>();
 
   const fetchData = async (pageNum: number) => {
-    const { data } = await axios.get(
-      `https://api.themoviedb.org/3/${change}/popular?api_key=${api}&language=en-US&page=${pageNum}`
-    );
+    const endpoint = isTopRated
+      ? `https://api.themoviedb.org/3/${change}/top_rated?api_key=${api}&language=en-US&page=${pageNum}`
+      : `https://api.themoviedb.org/3/${change}/popular?api_key=${api}&language=en-US&page=${pageNum}`;
+
+    const { data } = await axios.get(endpoint);
     setMovie(data.results);
     setFiltered(data.results);
   };
 
   useEffect(() => {
-    fetchData(page);
-  }, [page, change, Link]);
+    if (!query) {
+      fetchData(page);
+    }
+  }, [page, change, isTopRated]);
 
   const handleNext = () => {
     if (countEnd >= filtered.length) {
       setPage((prev) => prev + 1);
       setCount(0);
-      setCountEnd(10);
+      setCountEnd(12);
     } else {
-      setCount((prev) => prev + 10);
-      setCountEnd((prev) => prev + 10);
+      setCount((prev) => prev + 8);
+      setCountEnd((prev) => prev + 12);
     }
   };
 
   const handleBack = () => {
     if (count === 0 && page > 1) {
       setPage((prev) => prev - 1);
-      setCount(10);
+      setCount(8);
       setCountEnd(20);
     } else if (count > 0) {
-      setCount((prev) => prev - 10);
-      setCountEnd((prev) => prev - 10);
+      setCount((prev) => prev - 8);
+      setCountEnd((prev) => prev - 8);
     }
   };
 
@@ -62,7 +75,37 @@ const Product: FC = () => {
     setChange(val as "movie" | "tv");
     setPage(1);
     setCount(0);
-    setCountEnd(10);
+    setCountEnd(12);
+    setQuery("");
+    reset();
+  };
+
+  const onSubmit = async (data: ISearchForm) => {
+    const searchValue = data.search.trim();
+    if (!searchValue) return;
+
+    setQuery(searchValue);
+
+    try {
+      const { data: response } = await axios.get(
+        `https://api.themoviedb.org/3/search/${change}?api_key=${api}&query=${searchValue}`
+      );
+      setMovie(response.results);
+      setFiltered(response.results);
+      setCount(0);
+      setCountEnd(12);
+    } catch (error) {
+      console.error("Ошибка при поиске:", error);
+    }
+  };
+
+  const handleTopRatedClick = () => {
+    setIsTopRated((prev) => !prev);
+    setPage(1);
+    setCount(0);
+    setCountEnd(12);
+    setQuery("");
+    reset();
   };
 
   return (
@@ -71,11 +114,20 @@ const Product: FC = () => {
         <div className="container">
           <div className={scss.content}>
             <div className={scss.bot}>
-              <input
-                type="text"
-                placeholder="Search..."
-                className={scss.search}
-              />
+              <div className={scss.top}>
+                <form onSubmit={handleSubmit(onSubmit)} className={scss.form}>
+                  <input
+                    {...register("search")}
+                    type="text"
+                    placeholder="Search"
+                    className={scss.search}
+                  />
+                  <button onClick={handleTopRatedClick}>
+                    {isTopRated ? "Show Popular" : "Show Top Rated"}
+                  </button>
+                </form>
+              </div>
+
               <SwitchExs
                 first="movie"
                 second="tv"
@@ -96,6 +148,7 @@ const Product: FC = () => {
                 </div>
               ))}
             </div>
+
             <div className={scss.buttons}>
               <button onClick={handleBack} disabled={page === 1 && count === 0}>
                 back

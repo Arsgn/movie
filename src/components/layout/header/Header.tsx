@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
 import scss from "./Header.module.scss";
 import { IoLogoAngular } from "react-icons/io";
+import { Link, useNavigate } from "react-router-dom";
+import { MdOutlineMenu } from "react-icons/md";
+import { links } from "../../../constants/Links";
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,10 +22,11 @@ export default function Header() {
     <header id="header" className={scrolled ? scss.scrolled : ""}>
       <div className={scss.container}>
         <div className={scss.header_content}>
-          <a href="/" className={scss.logo}>
+          <a href="/product" className={scss.logo}>
             <div className={scss.logo_icon}>
               <div className={scss.logo_glow}></div>
-              <IoLogoAngular />
+
+              <IoLogoAngular onClick={() => navigate("/product")} />
             </div>
             <span className={scss.logo_text}>
               <span className={scss.logo_text_movie}>Alpha</span>
@@ -30,10 +35,13 @@ export default function Header() {
             </span>
           </a>
 
-          <nav className={scss.desktop_nav}>
+          {/* <nav className={scss.desktop_nav}>
             <a href="/movies" className={scss.nav_link}>
               Movies<span className={scss.nav_link_underline}></span>
             </a>
+            {links.map((item, index) => (
+              <Link key={index} className={scss.link} to={item.link}></Link>
+            ))}
             <div className={scss.dropdown}>
               <button className={scss.dropdown_button}>
                 Genres
@@ -71,7 +79,7 @@ export default function Header() {
             <a href="/new-releases" className={scss.nav_link}>
               New Releases<span className={scss.nav_link_underline}></span>
             </a>
-          </nav>
+          </nav> */}
 
           <div className={scss.actions}>
             <div className={scss.search_container}>
@@ -106,84 +114,13 @@ export default function Header() {
                   </svg>
                 </button>
               </form>
-              <button
-                className={scss.icon_button}
-                onClick={() => setSearchActive(true)}
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-                <span className={scss.sr_only}>Search</span>
-              </button>
-            </div>
 
-            <button
-              className={scss.icon_button}
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {!mobileMenuOpen ? (
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="3" y1="12" x2="21" y2="12" />
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <line x1="3" y1="18" x2="21" y2="18" />
-                </svg>
-              ) : (
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              )}
-              <span className={scss.sr_only}>Menu</span>
-            </button>
+              <h3 className={scss.ic}>
+                <MdOutlineMenu />
+              </h3>
+            </div>
           </div>
         </div>
-
-        <nav
-          className={`${scss.mobile_nav} ${mobileMenuOpen ? scss.active : ""}`}
-        >
-          <div className={scss.mobile_nav_links}>
-            <a href="/movies" className={scss.mobile_nav_link}>
-              Movies
-            </a>
-            <a href="/genres" className={scss.mobile_nav_link}>
-              Genres
-            </a>
-            <a href="/tv-shows" className={scss.mobile_nav_link}>
-              TV Shows
-            </a>
-            <a href="/new-releases" className={scss.mobile_nav_link}>
-              New Releases
-            </a>
-          </div>
-        </nav>
       </div>
     </header>
   );
