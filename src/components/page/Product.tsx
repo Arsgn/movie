@@ -115,17 +115,19 @@ const Product: FC = () => {
           <div className={scss.content}>
             <div className={scss.bot}>
               <div className={scss.top}>
-                <form onSubmit={handleSubmit(onSubmit)} className={scss.form}>
-                  <input
-                    {...register("search")}
-                    type="text"
-                    placeholder="Search"
-                    className={scss.search}
-                  />
+                <div className={scss.red}>
+                  <form onSubmit={handleSubmit(onSubmit)} className={scss.form}>
+                    <input
+                      {...register("search")}
+                      type="text"
+                      placeholder="Search"
+                      className={scss.search}
+                    />
+                  </form>
                   <button onClick={handleTopRatedClick}>
                     {isTopRated ? "Show Popular" : "Show Top Rated"}
                   </button>
-                </form>
+                </div>
               </div>
 
               <SwitchExs
